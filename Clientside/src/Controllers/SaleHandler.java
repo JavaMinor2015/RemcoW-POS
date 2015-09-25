@@ -11,10 +11,12 @@ public class SaleHandler {
 
     private Sale sale;
     private ProductScanner productScanner;
+    private PaymentHandler paymentHandler;
 
-    public SaleHandler(Inventory inventory){
+    public SaleHandler(Inventory inventory, PaymentHandler paymentHandler){
         sale = new Sale();
         productScanner = new ProductScanner(inventory);
+        this.paymentHandler = paymentHandler;
 
         SingleLog.getLog().addInfo("New sale started");
         waitForProducts();
@@ -32,8 +34,14 @@ public class SaleHandler {
 
     private void endSale(){
         //TODO Save sale in backend
-        ReceiptPrinter rp = new ReceiptPrinter(sale);
-        rp.printReceipt();
-        SingleLog.getLog().addInfo("End of sale");
+
+        if (paymentHandler.handlePayment(sale)) {
+            ReceiptPrinter rp = new ReceiptPrinter(sale);
+            rp.printReceipt();
+            SingleLog.getLog().addInfo("End of sale");
+        }
+        else {
+            SingleLog.getLog().addWarning("Payment failed");
+        }
     }
 }
