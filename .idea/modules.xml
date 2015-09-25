@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Clientside/Clientside.iml" filepath="$PROJECT_DIR$/Clientside/Clientside.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Serverside/REST/REST.iml" filepath="$PROJECT_DIR$/Serverside/REST/REST.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Serverside/SOAP/SOAP.iml" filepath="$PROJECT_DIR$/Serverside/SOAP/SOAP.iml" />
+    </modules>
+  </component>
+</project>
