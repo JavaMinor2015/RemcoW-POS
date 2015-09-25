@@ -25,7 +25,7 @@ public class Register {
 
         //Dummy data
         List<Product> productList = new ArrayList<Product>();
-        productList.add(new Product(123, "Chips"));
+        productList.add(new Product(123, "Chips", 1.50));
         //End dummy data
 
         inventory.setProductList(productList);

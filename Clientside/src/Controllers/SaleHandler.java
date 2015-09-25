@@ -31,6 +31,9 @@ public class SaleHandler {
     }
 
     private void endSale(){
+        //TODO Save sale in backend
+        ReceiptPrinter rp = new ReceiptPrinter(sale);
+        rp.printReceipt();
         SingleLog.getLog().addInfo("End of sale");
     }
 }
