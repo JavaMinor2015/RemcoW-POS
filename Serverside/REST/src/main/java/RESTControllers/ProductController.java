@@ -1,7 +1,11 @@
 package RESTControllers;
 
 import RESTModels.Product;
+import RESTUtils.Identifiers;
+import RESTUtils.Paths;
+import RESTUtils.URLAttacher;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -30,8 +34,8 @@ public class ProductController {
         //End dummy data
 
         Gson gson = new Gson();
-
-        return Response.ok(gson.toJson(products)).build();
+        JsonElement element = URLAttacher.attachURLS(gson.toJsonTree(products), Paths.BASE_URL + Paths.PRODUCT_URI, Identifiers.Product);
+        return Response.ok(gson.toJson(element)).build();
     }
 
     @Path("/{id}")
