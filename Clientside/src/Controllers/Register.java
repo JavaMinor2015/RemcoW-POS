@@ -3,6 +3,12 @@ package Controllers;
 import Models.Discount;
 import Models.Product;
 import Models.QuantityDiscount;
+import Utils.HttpRequest;
+import Utils.URL;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +20,14 @@ public class Register {
 
     private Inventory inventory;
     private PaymentHandler paymentHandler;
+    private HttpRequest httpRequest;
+    private Gson gson;
 
     public Register(){
         inventory = new Inventory();
         paymentHandler = new PaymentHandler();
+        httpRequest = new HttpRequest();
+        gson = new Gson();
 
         getProducts();
         getDiscounts();
@@ -25,12 +35,18 @@ public class Register {
     }
 
     private void getProducts(){
-        //TODO collect products from backend
-
-        //Dummy data
         List<Product> productList = new ArrayList<Product>();
-        productList.add(new Product(123, "Chips", 1.50));
-        //End dummy data
+
+        //Collect products from REST webservice and convert it too products
+        String response = httpRequest.makeGetReqeust(URL.BASE_URL + URL.PRODUCT_URI);
+        JsonParser parser = new JsonParser();
+        JsonElement jsonElement = parser.parse(response);
+        JsonArray jsonArray = jsonElement.getAsJsonArray();
+
+        for (int i = 0; i < jsonArray.size(); i++){
+            Product product = gson.fromJson(jsonArray.get(i), Product.class);
+            productList.add(product);
+        }
 
         inventory.setProductList(productList);
     }
