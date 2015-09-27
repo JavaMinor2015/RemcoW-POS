@@ -17,7 +17,9 @@ public class SaleHandler {
         sale = new Sale();
         productScanner = new ProductScanner(inventory);
         this.paymentHandler = paymentHandler;
+    }
 
+    public void newSale(){
         SingleLog.getLog().addInfo("New sale started");
         waitForProducts();
     }

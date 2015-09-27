@@ -20,17 +20,20 @@ public class Register {
 
     private Inventory inventory;
     private PaymentHandler paymentHandler;
+    private SaleHandler saleHandler;
     private HttpRequest httpRequest;
     private Gson gson;
 
     public Register(){
         inventory = new Inventory();
         paymentHandler = new PaymentHandler();
+        saleHandler = new SaleHandler(inventory, paymentHandler);
         httpRequest = new HttpRequest();
         gson = new Gson();
 
         getProducts();
         getDiscounts();
+
         startSale();
     }
 
@@ -63,7 +66,7 @@ public class Register {
     }
 
     private void startSale(){
-        SaleHandler sale = new SaleHandler(inventory, paymentHandler);
+        saleHandler.newSale();
     }
 
     public static void main(String[] args){
