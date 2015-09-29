@@ -1,6 +1,7 @@
 package RESTControllers;
 
 import RESTModels.Product;
+import RESTUtils.DataHandler;
 import com.google.gson.Gson;
 
 import javax.ws.rs.GET;
@@ -9,6 +10,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -20,14 +23,20 @@ public class ProductController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAll(){
-        //TODO get all products from DB and return them as JSON
+        DataHandler dh = new DataHandler();
+        String query = "SELECT * FROM PRODUCT";
+        ResultSet resultSet = dh.executeStatement(query);
 
-        //Dummy data
         ArrayList<Product> products = new ArrayList<Product>();
-        products.add(new Product(100, "Chips", 1.99));
-        products.add(new Product(123, "Beer", 1.50));
-        products.add(new Product(150, "Peanuts", 0.99));
-        //End dummy data
+        try {
+            while (resultSet.next()) {
+                System.out.println( resultSet.getDouble("PRICE"));
+                products.add(new Product(resultSet.getInt("CODE"), resultSet.getString("NAME"), resultSet.getDouble("PRICE")));
+            }
+            dh.closeDBConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         Gson gson = new Gson();
         return Response.ok(gson.toJson(products)).build();
@@ -39,20 +48,20 @@ public class ProductController {
     public Response getProduct(@PathParam("productcode") int productcode){
         //TODO get product by id from DB and return it as JSON
 
-        //Dummy data
-        ArrayList<Product> products = new ArrayList<Product>();
-        products.add(new Product(100, "Chips", 1.99));
-        products.add(new Product(123, "Beer", 1.50));
-        products.add(new Product(150, "Peanuts", 0.99));
-        //End dummy data
+        DataHandler dh = new DataHandler();
+        String query = "SELECT * FROM PRODUCT WHERE CODE = " + productcode;
+        ResultSet resultSet = dh.executeStatement(query);
 
         Gson gson = new Gson();
-
-        for (Product product : products){
-            if (product.getProductcode() == productcode){
-                return Response.ok(gson.toJson(product)).build();
-            }
+        Product product = null;
+        try {
+            resultSet.next();
+            product = new Product(resultSet.getInt("CODE"), resultSet.getString("NAME"), resultSet.getDouble("PRICE"));
+            dh.closeDBConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return Response.ok(gson.toJson("Product not found")).build();
+
+        return Response.ok(gson.toJson(product)).build();
     }
 }

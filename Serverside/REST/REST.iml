@@ -39,5 +39,7 @@
     <orderEntry type="library" name="Maven: com.sun.jersey:jersey-bundle:1.18.3" level="project" />
     <orderEntry type="library" name="Maven: javax.ws.rs:jsr311-api:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.3.1" level="project" />
+    <orderEntry type="library" name="ojdbc6" level="project" />
+    <orderEntry type="library" name="orai18n" level="project" />
   </component>
 </module>
