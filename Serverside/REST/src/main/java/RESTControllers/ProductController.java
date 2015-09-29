@@ -30,7 +30,6 @@ public class ProductController {
         ArrayList<Product> products = new ArrayList<Product>();
         try {
             while (resultSet.next()) {
-                System.out.println( resultSet.getDouble("PRICE"));
                 products.add(new Product(resultSet.getInt("CODE"), resultSet.getString("NAME"), resultSet.getDouble("PRICE")));
             }
             dh.closeDBConnection();
@@ -46,8 +45,6 @@ public class ProductController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getProduct(@PathParam("productcode") int productcode){
-        //TODO get product by id from DB and return it as JSON
-
         DataHandler dh = new DataHandler();
         String query = "SELECT * FROM PRODUCT WHERE CODE = " + productcode;
         ResultSet resultSet = dh.executeStatement(query);
