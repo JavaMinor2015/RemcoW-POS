@@ -36,7 +36,9 @@ public class HttpRequest {
             in.close();
 
             //print result
+            System.out.println(response);
             return response.toString();
+
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (ProtocolException e) {
