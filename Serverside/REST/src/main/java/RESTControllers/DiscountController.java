@@ -64,34 +64,36 @@ public class DiscountController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getToday(){
-        //TODO get daily discounts from DB and return them as JSON
-
-        //Dummy data
+        DataHandler dh = new DataHandler();
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        ArrayList<Discount> discounts = new ArrayList<Discount>();
-        try {
-            Date start1 = df.parse("20/09/2015");
-            Date end1 = df.parse("30/09/2015");
-            Date start2 = df.parse("25/09/2015");
-            Date end2 = df.parse("30/09/2015");
-
-            discounts.add(new QuantityDiscount(1, new Product(100, "Chips", 1.99), 2, start1, end1));
-            discounts.add(new PercentageDiscount(2, new Product(150, "Peanuts", 0.99), 25, start2, end2));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        //End dummy data
-
-        ArrayList<Discount> dailyDiscounts = new ArrayList<Discount>();
         Date date = new Date();
-        for (Discount discount : discounts){
-            if (date.after(discount.getStartDate()) && date.before(discount.getEndDate())){
-                dailyDiscounts.add(discount);
+        String query = "select d.ID, d.DISCOUNT_TYPE, d.PRODUCT_ID, d.VALUE, d.START_DATE, d.END_DATE, p.NAME, p.PRICE FROM DISCOUNT d, PRODUCT p WHERE d.START_DATE <= '" + df.format(date) + "' AND d.END_DATE >= '" + df.format(date) + "' AND d.PRODUCT_ID = p.CODE";
+        ResultSet resultSet = dh.executeStatement(query);
+
+        ArrayList<Discount> discounts = new ArrayList<Discount>();
+
+        try {
+            while (resultSet.next()){
+                Product product = new Product(resultSet.getInt("PRODUCT_ID"), resultSet.getString("NAME"), resultSet.getDouble("PRICE"));
+                int id = resultSet.getInt("ID");
+                int value = resultSet.getInt("VALUE");
+                Date startDate = resultSet.getDate("START_DATE");
+                Date endDate = resultSet.getDate("END_DATE");
+                switch (resultSet.getInt("DISCOUNT_TYPE")){
+                    case 1:
+                        discounts.add(new QuantityDiscount(id, product, value, startDate, endDate));
+                        break;
+                    case 2:
+                        discounts.add(new PercentageDiscount(id, product, value, startDate, endDate));
+                        break;
             }
+        }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         Gson gson = new Gson();
-        return Response.ok(gson.toJson(dailyDiscounts)).build();
+        return Response.ok(gson.toJson(discounts)).build();
     }
 
     @Path("/{id}")
