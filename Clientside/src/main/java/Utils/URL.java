@@ -8,4 +8,5 @@ public class URL {
     public static final String PRODUCT_URI = "/products";
     public static final String DISCOUNT_URI = "/discounts";
     public static final String DISCOUNT_TODAY_URI = "/discounts/today";
+    public static final String FIDELITYCARD_URI = "/fidelitycards";
 }

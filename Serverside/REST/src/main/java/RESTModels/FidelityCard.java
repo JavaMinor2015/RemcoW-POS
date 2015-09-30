@@ -1,4 +1,4 @@
-package Models;
+package RESTModels;
 
 /**
  * Created by Remco on 25-9-2015.

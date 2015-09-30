@@ -49,7 +49,6 @@ public class ProductController {
         String query = "SELECT * FROM PRODUCT WHERE CODE = " + productcode;
         ResultSet resultSet = dh.executeStatement(query);
 
-        Gson gson = new Gson();
         Product product = null;
         try {
             resultSet.next();
@@ -59,6 +58,7 @@ public class ProductController {
             e.printStackTrace();
         }
 
+        Gson gson = new Gson();
         return Response.ok(gson.toJson(product)).build();
     }
 }
