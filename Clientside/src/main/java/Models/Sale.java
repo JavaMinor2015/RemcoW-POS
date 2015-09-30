@@ -37,4 +37,8 @@ public class Sale {
     public double getDiscount() {
         return discount;
     }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
 }
