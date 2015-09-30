@@ -1,14 +1,12 @@
 package Controllers;
 
 import Models.Discount;
+import Models.PercentageDiscount;
 import Models.Product;
 import Models.QuantityDiscount;
 import Utils.HttpRequest;
 import Utils.URL;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +27,7 @@ public class Register {
         paymentHandler = new PaymentHandler();
         saleHandler = new SaleHandler(inventory, paymentHandler);
         httpRequest = new HttpRequest();
-        gson = new Gson();
+        gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
 
         getProducts();
         getDiscounts();
@@ -55,12 +53,28 @@ public class Register {
     }
 
     private void getDiscounts(){
-        //TODO collect discounts of today from backend
-
-        //Dummy data
         List<Discount> discountList = new ArrayList<Discount>();
-        discountList.add(new QuantityDiscount(inventory.searchProduct(123), 3));
-        //End dummy data
+
+        //Collect todays discounts from REST webservice and convert it too discounts
+        String response = httpRequest.makeGetReqeust(URL.BASE_URL + URL.DISCOUNT_TODAY_URI);
+        JsonParser parser = new JsonParser();
+        JsonElement jsonElement = parser.parse(response);
+        JsonArray jsonArray = jsonElement.getAsJsonArray();
+
+        Discount discount;
+        for (int i = 0; i < jsonArray.size(); i++){
+            JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
+            if (jsonObject.has("quantity")){
+                discount = gson.fromJson(jsonObject, QuantityDiscount.class);
+            }
+            else if (jsonObject.has("percentage")){
+                discount = gson.fromJson(jsonObject, PercentageDiscount.class);
+            }
+            else {
+                continue;
+            }
+            discountList.add(discount);
+        }
 
         paymentHandler.setDiscountList(discountList);
     }
